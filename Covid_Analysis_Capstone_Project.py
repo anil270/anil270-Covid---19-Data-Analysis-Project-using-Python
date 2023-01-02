@@ -82,25 +82,33 @@ df.location.nunique()
 # In[9]:
 
 
-a=df["continent"].value_counts()
-a
+b=df["continent"].dropna()
 
 
 # In[10]:
 
 
-a.iloc[0]
+a=b.value_counts()
+
+
+# In[11]:
+
+
+for i in b:
+    if a[i]==a.max():
+        print(f"{i} continent has maximum frequency",":",a.max())
+        break
 
 
 # c. Find maximum and mean value in total_case.
 
-# In[11]:
+# In[12]:
 
 
 print("Maximum values :",df["total_cases"].max())
 
 
-# In[12]:
+# In[13]:
 
 
 print("Mean values :",df["total_cases"].mean())
@@ -108,7 +116,7 @@ print("Mean values :",df["total_cases"].mean())
 
 # d. Find 25%,50%,and 75% quartile values in total_deaths.
 
-# In[13]:
+# In[14]:
 
 
 df["total_deaths"].quantile([0.25,0.5,0.75])
@@ -116,7 +124,7 @@ df["total_deaths"].quantile([0.25,0.5,0.75])
 
 # e. Find which continent has maximum human_development_index.
 
-# In[14]:
+# In[15]:
 
 
 a=df[["continent",'human_development_index']].dropna()
@@ -125,7 +133,7 @@ a[a['human_development_index'] == a['human_development_index'].max()].drop_dupli
 
 # f. Find which continent has minimum gdp_per_capita.
 
-# In[15]:
+# In[16]:
 
 
 a=df[["continent",'gdp_per_capita']].dropna()
@@ -135,19 +143,19 @@ a[a['gdp_per_capita'] == a['gdp_per_capita'].min()].drop_duplicates()
 # # 4.Filter the dataframe with only this columns
 # # ['continent','location','date','total_cases','total_deaths','gdp_per_capita','human_development_index'] and update the data frame.
 
-# In[16]:
+# In[17]:
 
 
 a= df.filter(['continent','location','date','total_cases','total_deaths','gdp_per_capita','human_development_index'])
 
 
-# In[17]:
+# In[18]:
 
 
 df2=a
 
 
-# In[18]:
+# In[19]:
 
 
 df2
@@ -157,7 +165,7 @@ df2
 
 # a.Remove all duplicates observations.
 
-# In[19]:
+# In[20]:
 
 
 df2.drop_duplicates()
@@ -165,7 +173,7 @@ df2.drop_duplicates()
 
 # b. Find missing values in all columns.
 
-# In[20]:
+# In[21]:
 
 
 df2.isnull()
@@ -173,7 +181,7 @@ df2.isnull()
 
 # c. Remove all observations where continent column value is missing.
 
-# In[21]:
+# In[22]:
 
 
 df4=df2.dropna(subset=['continent'])
@@ -182,7 +190,7 @@ df4
 
 # d. Fill all  missing values with 0.
 
-# In[22]:
+# In[23]:
 
 
 df3=df4.fillna(0)
@@ -193,7 +201,7 @@ df3
 
 # a. Convert date column in datetime format using pandas.to_datetime.
 
-# In[23]:
+# In[24]:
 
 
 import datetime as dt 
@@ -201,19 +209,19 @@ df3["date"]=pd.to_datetime(df3["date"])
 df3["date"]=df3["date"]
 
 
-# In[24]:
+# In[25]:
 
 
 df3
 
 
-# In[25]:
+# In[26]:
 
 
 dates = pd.to_datetime(df3['date'])
 
 
-# In[26]:
+# In[27]:
 
 
 dates
@@ -221,13 +229,13 @@ dates
 
 # b. Create new column month after extracting month data from date column.
 
-# In[27]:
+# In[28]:
 
 
 df3['month'] = pd.DatetimeIndex(df3['date']).month
 
 
-# In[28]:
+# In[29]:
 
 
 df3
@@ -237,7 +245,7 @@ df3
 
 # a. Find max value in all columns using groupby function on "continent" column.
 
-# In[29]:
+# In[30]:
 
 
 df3.reset_index(inplace = True)
@@ -247,7 +255,7 @@ b
 
 # b. Store the result in a new dataframe named "df_groupby'.
 
-# In[30]:
+# In[31]:
 
 
 df_groupby = b
@@ -258,13 +266,13 @@ df_groupby
 
 # a. Create a new feature "total_deaths_to_total_cases" by ratio of "total_deaths" column to "total_cases".
 
-# In[31]:
+# In[32]:
 
 
 df_groupby["total_deaths_to_total_cases"] = df_groupby["total_deaths"]/df_groupby["total_cases"]
 
 
-# In[32]:
+# In[33]:
 
 
 df_groupby
@@ -274,7 +282,7 @@ df_groupby
 
 # a. Perform Univariate analysis on "gdp_per_capita" column by plotting histogram using seaborn dist plot.
 
-# In[33]:
+# In[34]:
 
 
 sns.distplot(df_groupby['gdp_per_capita'],kde=False,hist=True,bins=11,hist_kws=dict(edgecolor="k", linewidth=1))
@@ -282,7 +290,7 @@ plt.title("Histogram")
 plt.show()
 
 
-# In[34]:
+# In[35]:
 
 
 df_groupby.mean()
@@ -290,7 +298,7 @@ df_groupby.mean()
 
 # b. Plot a scatter plot of "total_cases" & "gdp_per_capita".
 
-# In[35]:
+# In[36]:
 
 
 sns.scatterplot(x = 'total_cases', y= "gdp_per_capita", data=df_groupby)
@@ -302,7 +310,7 @@ plt.show()
 
 # c. Plot Pairplot on df_groupby dataset.
 
-# In[36]:
+# In[37]:
 
 
 sns.pairplot(df_groupby)
@@ -310,7 +318,7 @@ sns.pairplot(df_groupby)
 
 # d. Plot a bar plot of 'continent' column with 'total_cases'.
 
-# In[37]:
+# In[38]:
 
 
 g = sns.catplot(x= "continent",y ="total_cases",kind="bar", data=df_groupby)
@@ -318,7 +326,7 @@ g = sns.catplot(x= "continent",y ="total_cases",kind="bar", data=df_groupby)
 
 # # 10. Save the df_groupby dataframe in your local drive using pandas.to_csv function.
 
-# In[38]:
+# In[39]:
 
 
 df3.to_csv('df_groupby.csv', index=False)
